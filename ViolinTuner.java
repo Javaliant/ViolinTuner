@@ -1,8 +1,13 @@
+/* Author: Luigi Vincent
+A simple Violin Tuner emits G, D, A, E sounds to facilitate Violin Tuning.
+*/
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionListener; 
+import java.awt.event.KeyAdapter;  
+import java.awt.event.KeyEvent;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import javax.sound.midi.*;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -71,6 +76,32 @@ public class ViolinTuner {
             notePanel.add(buttons[i++] = makeButton(note));
         }
 
+           notePanel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent k) {
+                if (k.getKeyCode() == KeyEvent.VK_G || k.getKeyCode() == KeyEvent.VK_1 || k.getKeyCode() == KeyEvent.VK_J) {
+                    ViolinTuner.this.play(Note.values()[0]);
+                }
+                else if (k.getKeyCode() == KeyEvent.VK_D || k.getKeyCode() == KeyEvent.VK_2 || k.getKeyCode() == KeyEvent.VK_K) {
+                    ViolinTuner.this.play(Note.values()[1]);
+                }
+                else if (k.getKeyCode() == KeyEvent.VK_A || k.getKeyCode() == KeyEvent.VK_3 || k.getKeyCode() == KeyEvent.VK_L) {
+                    ViolinTuner.this.play(Note.values()[2]);
+                }
+                else if (k.getKeyCode() == KeyEvent.VK_E || k.getKeyCode() == KeyEvent.VK_4 || k.getKeyCode() == KeyEvent.VK_SEMICOLON) {
+                    ViolinTuner.this.play(Note.values()[3]);
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent k) {
+                ViolinTuner.this.silence();
+            }
+
+        });
+
+        notePanel.setFocusable(true);
+        notePanel.requestFocusInWindow();
+
         // Minimum width to ensure window title is not truncated
         JPanel widener = new JPanel();
         widener.setPreferredSize(new Dimension(250, 0));
@@ -132,6 +163,11 @@ public class ViolinTuner {
     }   
 
     public static void main(String[] args) {
+        try { 
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException  e) {
+            e.printStackTrace();
+        }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
